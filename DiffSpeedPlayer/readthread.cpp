@@ -16,7 +16,6 @@ void ReadThread::run()
 {
     AVPacket *pAVPacket = av_packet_alloc();
     AVPacket *pLastAVpacket = nullptr;
-    static int nStatic = 0;
 
     while (av_read_frame(m_pVideoState->pFormatCtx, pAVPacket) >= 0) {
         if (pAVPacket->stream_index == m_pVideoState->nVideoIndex) {
@@ -25,8 +24,6 @@ void ReadThread::run()
             }
 
             if (!pLastAVpacket || qAbs(pLastAVpacket->buf->size - pAVPacket->buf->size) < 20) {
-//                nStatic ++;
-//                qInfo() << pAVPacket->buf->size << nStatic;
                 pLastAVpacket = av_packet_alloc();
                 *pLastAVpacket = *pAVPacket;
                 put_packet(&m_pVideoState->videoQueue, pAVPacket, true);

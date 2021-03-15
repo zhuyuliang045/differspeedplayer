@@ -24,7 +24,6 @@ void VideoPlayer::run()
     FrameQueue *pFrameQueue;
     int remianTime;
     QPixmap pixmap;
-    static int nStatic = 0;
     AVFrame *pLastFrame = av_frame_alloc();
 
     pFrameQueue = &m_pVideoState->picQueue;
@@ -68,38 +67,5 @@ void VideoPlayer::run()
 
         pFrameQueue->queue.dequeue();
     }
-}
-
-void VideoPlayer::transPixmap(AVFrame *pAVFrame)
-{
-    AVFrame *pFrameYUV = av_frame_alloc();
-    QPixmap pixMap;
-    unsigned char *outBuffer;
-
-    AVCodecContext *pAVCodecCtx = m_pVideoState->videoDecoder.pAVCodecCtx;
-
-    outBuffer = (unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24, pAVCodecCtx->width, pAVCodecCtx->height, 1));
-    av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, outBuffer, AV_PIX_FMT_RGB24, pAVCodecCtx->width, pAVCodecCtx->height, 1);
-
-
-    m_pSwsCtx = sws_getContext(pAVCodecCtx->width, pAVCodecCtx->height, pAVCodecCtx->pix_fmt,
-                               pAVCodecCtx->width, pAVCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
-
-    sws_scale(m_pSwsCtx, (const unsigned char *const *)pAVFrame->data,
-              pAVFrame->linesize, 0, pAVCodecCtx->height, pFrameYUV->data, pFrameYUV->linesize);
-
-
-    QImage tmpImg(pFrameYUV->data[0], pAVFrame->width, pAVFrame->height, QImage::Format_RGB888);
-
-    QImage tmpImg1 =  tmpImg.scaled(1920, 1080);
-
-    pixMap = QPixmap::fromImage(tmpImg1);
-
-    sigVideoFrame(pixMap);
-
-    free(outBuffer);
-    av_frame_free(&pFrameYUV);
-    av_frame_free(&pAVFrame);
-    sws_freeContext(m_pSwsCtx);
 }
 

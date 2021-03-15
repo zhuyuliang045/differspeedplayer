@@ -21,8 +21,6 @@ public:
 
     void run();
 
-    void transPixmap(AVFrame *pAVFrame);
-
 private:
     StreamOpen *m_pStreamOpen;
     VideoState *m_pVideoState;

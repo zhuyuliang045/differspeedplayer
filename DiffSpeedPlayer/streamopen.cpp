@@ -13,8 +13,6 @@ StreamOpen::StreamOpen()
     m_pVideoState->videoQueue.pMutex = new QMutex;
     m_pVideoState->videoQueue.pWaitCondition = new QWaitCondition;
 
-//    m_pVideoState->picQueue.nSize = 0;
-//    m_pVideoState->picQueue.nRIndex = 0;
     m_pVideoState->picQueue.nMaxSize = 640;
     m_pVideoState->picQueue.pMutex = new QMutex;
     m_pVideoState->picQueue.pCondition_Not_Full = new QWaitCondition;
@@ -41,15 +39,6 @@ void StreamOpen::streamOpen(int nIndex)
         qDebug() << "error";
     }
     pAVCodecCtx = pFormatCtx->streams[nIndex]->codec;
-//    pAVCodecCtx = avcodec_alloc_context3(nullptr);
-//    if (!pAVCodecCtx) {
-//        return;
-//    }
-
-//    nRet = avcodec_parameters_to_context(pAVCodecCtx, pFormatCtx->streams[nIndex]->codecpar);
-//    if (nRet < 0) {
-//        qDebug() << "error";
-//    }
 
     pCodec = avcodec_find_decoder(pAVCodecCtx->codec_id);
 
@@ -109,14 +98,6 @@ void StreamOpen::fileOpen(QString strFileName)
         if (type >= 0) {
             streamType[type] = i;
         }
-    }
-
-    //设在窗口大小和比例
-    if (streamType[AVMEDIA_TYPE_VIDEO] >= 0) {
-        AVStream *avStream = pForamtCtx->streams[streamType[AVMEDIA_TYPE_VIDEO]];
-        AVCodecParameters *codecpar = avStream->codecpar;
-        AVRational ration = av_guess_sample_aspect_ratio(pForamtCtx, avStream, nullptr);
-        //Todo 设置窗口大小和比例
     }
 
     //readpacket

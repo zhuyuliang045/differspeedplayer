@@ -29,13 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     pLayout->addWidget(pLabel);
     pLayout->addStretch();
     pWidget->setLayout(pLayout);
-    pLabel->setText(QString("解码准备"));
+    pLabel->setText(QString("播放准备..."));
 
     m_pVBoxLayout->addWidget(pWidget);
 
     m_pVideoPlayer = new VideoPlayer;
     connect(m_pVideoPlayer, SIGNAL(sigVideoFrame(QPixmap)), this, SLOT(freshPixmap(QPixmap)), Qt::QueuedConnection);
-    QString strPath("/aaa.mp4");
+    QString strPath("./test.mp4");
     m_pVideoPlayer->play(strPath);
 
     QTimer::singleShot(10000, this, [ = ] {
